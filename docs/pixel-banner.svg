@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 200" width="720" height="200" role="img" aria-label="深夜进食 Midnight Snack">
+  <defs>
+    <style>
+      .t1 { font-family: ui-monospace, "SF Mono", Menlo, Consolas, "PingFang SC", monospace; font-size: 40px; font-weight: bold; fill: #ffcc4d; letter-spacing: 6px; }
+      .t2 { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 15px; fill: #9a94c4; letter-spacing: 5px; }
+      .t3 { font-family: ui-monospace, "SF Mono", Menlo, Consolas, "PingFang SC", monospace; font-size: 13px; fill: #7bd88f; }
+    </style>
+  </defs>
+  <rect width="720" height="200" fill="#16142a"/>
+  <rect width="720" height="200" fill="none"/>
+
+  <!-- 像素月亮 -->
+  <g fill="#ffcc4d">
+    <rect x="596" y="34" width="14" height="14"/><rect x="610" y="34" width="14" height="14"/>
+    <rect x="624" y="34" width="14" height="14"/>
+    <rect x="582" y="48" width="14" height="14"/><rect x="596" y="48" width="14" height="14"/>
+    <rect x="610" y="48" width="14" height="14"/><rect x="624" y="48" width="14" height="14"/>
+    <rect x="638" y="48" width="14" height="14"/>
+    <rect x="568" y="62" width="14" height="14"/><rect x="582" y="62" width="14" height="14"/>
+    <rect x="596" y="62" width="14" height="14"/><rect x="610" y="62" width="14" height="14"/>
+    <rect x="624" y="62" width="14" height="14"/><rect x="638" y="62" width="14" height="14"/>
+    <rect x="652" y="62" width="14" height="14"/>
+    <rect x="568" y="76" width="14" height="14"/><rect x="582" y="76" width="14" height="14"/>
+    <rect x="596" y="76" width="14" height="14"/><rect x="610" y="76" width="14" height="14"/>
+    <rect x="624" y="76" width="14" height="14"/><rect x="638" y="76" width="14" height="14"/>
+    <rect x="652" y="76" width="14" height="14"/>
+    <rect x="582" y="90" width="14" height="14"/><rect x="596" y="90" width="14" height="14"/>
+    <rect x="610" y="90" width="14" height="14"/><rect x="624" y="90" width="14" height="14"/>
+    <rect x="638" y="90" width="14" height="14"/>
+    <rect x="596" y="104" width="14" height="14"/><rect x="610" y="104" width="14" height="14"/>
+    <rect x="624" y="104" width="14" height="14"/>
+  </g>
+
+  <!-- 像素汉堡 -->
+  <g>
+    <rect x="60" y="52" width="14" height="14" fill="#ffcc4d"/><rect x="74" y="52" width="14" height="14" fill="#ffcc4d"/>
+    <rect x="88" y="52" width="14" height="14" fill="#ffcc4d"/><rect x="102" y="52" width="14" height="14" fill="#ffcc4d"/>
+    <rect x="46" y="66" width="14" height="14" fill="#ffcc4d"/><rect x="60" y="66" width="14" height="14" fill="#ffcc4d"/>
+    <rect x="74" y="66" width="14" height="14" fill="#ffcc4d"/><rect x="88" y="66" width="14" height="14" fill="#ffcc4d"/>
+    <rect x="102" y="66" width="14" height="14" fill="#ffcc4d"/><rect x="116" y="66" width="14" height="14" fill="#ffcc4d"/>
+    <rect x="32" y="80" width="14" height="14" fill="#7bd88f"/><rect x="46" y="80" width="14" height="14" fill="#7bd88f"/>
+    <rect x="60" y="80" width="14" height="14" fill="#7bd88f"/><rect x="74" y="80" width="14" height="14" fill="#7bd88f"/>
+    <rect x="88" y="80" width="14" height="14" fill="#7bd88f"/><rect x="102" y="80" width="14" height="14" fill="#7bd88f"/>
+    <rect x="116" y="80" width="14" height="14" fill="#7bd88f"/><rect x="130" y="80" width="14" height="14" fill="#7bd88f"/>
+    <rect x="32" y="94" width="14" height="14" fill="#8b5a2b"/><rect x="46" y="94" width="14" height="14" fill="#8b5a2b"/>
+    <rect x="60" y="94" width="14" height="14" fill="#8b5a2b"/><rect x="74" y="94" width="14" height="14" fill="#8b5a2b"/>
+    <rect x="88" y="94" width="14" height="14" fill="#8b5a2b"/><rect x="102" y="94" width="14" height="14" fill="#8b5a2b"/>
+    <rect x="116" y="94" width="14" height="14" fill="#8b5a2b"/><rect x="130" y="94" width="14" height="14" fill="#8b5a2b"/>
+    <rect x="32" y="108" width="14" height="14" fill="#ffcc4d"/><rect x="46" y="108" width="14" height="14" fill="#ffcc4d"/>
+    <rect x="60" y="108" width="14" height="14" fill="#ffcc4d"/><rect x="74" y="108" width="14" height="14" fill="#ffcc4d"/>
+    <rect x="88" y="108" width="14" height="14" fill="#ffcc4d"/><rect x="102" y="108" width="14" height="14" fill="#ffcc4d"/>
+    <rect x="116" y="108" width="14" height="14" fill="#ffcc4d"/><rect x="130" y="108" width="14" height="14" fill="#ffcc4d"/>
+    <rect x="46" y="122" width="14" height="14" fill="#8b5a2b"/><rect x="60" y="122" width="14" height="14" fill="#8b5a2b"/>
+    <rect x="74" y="122" width="14" height="14" fill="#8b5a2b"/><rect x="88" y="122" width="14" height="14" fill="#8b5a2b"/>
+    <rect x="102" y="122" width="14" height="14" fill="#8b5a2b"/><rect x="116" y="122" width="14" height="14" fill="#8b5a2b"/>
+    <rect x="60" y="136" width="14" height="14" fill="#ffcc4d"/><rect x="74" y="136" width="14" height="14" fill="#ffcc4d"/>
+    <rect x="88" y="136" width="14" height="14" fill="#ffcc4d"/><rect x="102" y="136" width="14" height="14" fill="#ffcc4d"/>
+  </g>
+
+  <text class="t1" x="196" y="92">深夜进食</text>
+  <text class="t2" x="196" y="122">MIDNIGHT SNACK</text>
+  <text class="t3" x="196" y="152">没有失败结局 · 没有正确答案</text>
+</svg>
