@@ -24,7 +24,8 @@
 
 <p align="center">
   <img src="./docs/qrcode.svg" alt="扫码试玩" width="168" /><br>
-  <sub>扫这个，睡前躺床上来一局 · <a href="https://leoli236.github.io/mcd-midnight-snack/">https://leoli236.github.io/mcd-midnight-snack/</a></sub>
+  <sub>扫这个，睡前躺床上来一局 · <a href="https://leoli236.github.io/mcd-midnight-snack/">https://leoli236.github.io/mcd-midnight-snack/</a><br>
+  想转发给朋友？<a href="./docs/qrcode.png">存这张纯二维码</a>，或者发<a href="./docs/qrcode-card.png">这张转发卡片</a>（微信里长按就能识别）</sub>
 </p>
 
 ---
@@ -380,13 +381,16 @@ mcd-midnight-snack/
 ├── game/
 │   ├── midnight-snack.html   # 游戏本体，单文件零依赖
 │   └── menu.js               # MCP 生成的门店实时菜单（可选，缺失则回退内置）
-├── scripts/
-│   └── fetch-menu.mjs        # MCP Streamable HTTP 客户端，生成菜单数据
 ├── .github/workflows/
 │   └── pages.yml             # 自动部署到 GitHub Pages（从 game/ 现场生成，不留副本）
 ├── docs/
 │   ├── pixel-banner.svg
-│   └── qrcode.svg            # 扫码直达在线版
+│   ├── qrcode.svg            # 扫码直达在线版（README 顶部展示用，矢量不失真）
+│   ├── qrcode.png            # 纯二维码 PNG —— 转发用，微信长按可识别
+│   └── qrcode-card.png       # 带标题的转发卡片 PNG —— 直接发聊天最方便
+├── scripts/
+│   ├── fetch-menu.mjs        # MCP Streamable HTTP 客户端，生成菜单数据
+│   └── make-qr.py            # 重新生成三个二维码文件（含 zxing 回扫验证）
 ├── data/
 │   ├── menu.json             # 同一份数据的 JSON 版，可在游戏里手动载入
 │   ├── menu-raw.json         # MCP 原始响应留档（可核 Trace ID）
