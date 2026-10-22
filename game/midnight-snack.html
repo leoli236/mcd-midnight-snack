@@ -195,16 +195,14 @@ button:disabled{opacity:.45; cursor:not-allowed;}
 #fcart .fc-row .x:active{transform:none; box-shadow:none;}
 #fcart .fc-act{gap:8px; margin-top:3px;}
 #fcart .fc-act button{padding:7px 10px; text-align:center; font-size:12.5px;}
-/* 悬浮栏会盖住最后一张卡片，给它让出高度 */
+/* 悬浮栏明细展开时高度可达 300px+，固定的 padding-bottom 一定会在某个
+   条目数下失效（页面滚到底、内容仍在栏后）。所以留白由 JS 按栏的实际
+   高度动态设置（见 syncFloatPadding），这里只留一个 JS 未跑起来时的兜底。 */
 body.has-fcart{padding-bottom:104px;}
-/* 只有 padding-bottom 还不够：浏览器/自动化把按钮 scrollIntoView 时默认
-   贴到视口底边 —— 正好压进悬浮栏底下，点击会被 .fc 拦截。
-   scroll-margin 让「滚到这个元素」时自动留出悬浮栏的高度，一行修所有按钮。 */
-body.has-fcart button, body.has-fcart .card{scroll-margin-bottom:116px;}
+/* scroll-margin 是第二重保险：scrollIntoView 定位时额外留出余量 */
+body.has-fcart button, body.has-fcart .card{scroll-margin-bottom:130px;}
 @media (max-width:560px){
   #fcart .fc-sum{display:none;}          /* 窄屏优先保住品名，价格热量收起 */
-  body.has-fcart{padding-bottom:118px;}
-  body.has-fcart button, body.has-fcart .card{scroll-margin-bottom:130px;}
 }
 
 /* ---------- 后厨 / 出餐 ---------- */
@@ -1099,7 +1097,29 @@ function mountFloatCart(){
 }
 function unmountFloatCart(){
   document.getElementById('fcart')?.remove();
+  document.getElementById('fcart-spacer')?.remove();
   document.body.classList.remove('has-fcart');
+}
+/* 悬浮栏高度是动态的（明细条数不同、窄屏收起价格），固定留白必然在某个
+   条目数下失守 —— 页面滚到底、最后一张卡片仍压在栏后，点击被拦截。
+   留白的三个候选方案里两个有坑：body 的 padding-bottom 与 #app 的
+   margin-bottom 在 body{display:flex;overflow-y:auto} 溢出时都**不参与
+   滚动区域**（实测设 354px scrollHeight 纹丝不动，flexbox 经典怪癖）。
+   所以用最笨但最可靠的办法：往 .panel 末尾塞一个普通流内占位 div，
+   高度跟随悬浮栏实测值。 */
+function syncFloatPadding(){
+  const el=document.getElementById('fcart');
+  let sp=document.getElementById('fcart-spacer');
+  if(!el){ if(sp) sp.remove(); return; }
+  const panel=document.querySelector('#app .panel:last-of-type') || document.querySelector('#app .panel');
+  if(!panel) return;
+  if(!sp || sp.parentNode!==panel){
+    sp?.remove();
+    sp=document.createElement('div');
+    sp.id='fcart-spacer';
+    panel.appendChild(sp);
+  }
+  sp.style.height = Math.ceil(el.getBoundingClientRect().height + 24) + 'px';
 }
 function renderFloatCart(fc, items, qty, cb){
   if(!fc) return;              // 悬浮栏没挂上就静默降级：面板里那条购物车还在
@@ -1138,6 +1158,7 @@ function renderFloatCart(fc, items, qty, cb){
   fc.querySelectorAll('.fc-row .x').forEach(b=>{
     b.addEventListener('click', ()=>cb.onRemove(b.dataset.id));
   });
+  syncFloatPadding();          // 内容高度变了，body 留白跟着变
 }
 
 /* ═══════════════════════════════════════════════════════
