@@ -17,6 +17,16 @@
   <code>单文件 HTML</code> · <code>零依赖</code> · <code>双击即玩</code> · <code>单轮 3–5 分钟</code>
 </p>
 
+<p align="center">
+  <b>▶ <a href="https://leoli236.github.io/mcd-midnight-snack/">在线版：点这里直接玩</a></b><br>
+  <sub>免安装。手机浏览器里打开也一样玩，微信里也能直接点。</sub>
+</p>
+
+<p align="center">
+  <img src="./docs/qrcode.svg" alt="扫码试玩" width="168" /><br>
+  <sub>扫这个，睡前躺床上来一局 · <a href="https://leoli236.github.io/mcd-midnight-snack/">https://leoli236.github.io/mcd-midnight-snack/</a></sub>
+</p>
+
 ---
 
 ## 它长什么样
@@ -218,15 +228,44 @@ ADD_ITEM: { from:['PICK'], to:'PICK',
 
 ## 安装方法
 
-### 方式 A：直接玩（30 秒）
+两种方式都能玩，选一个就行 —— 玩法完全一致，区别只是要不要联网、要不要传文件。
+
+| | **在线版** | **单文件离线版** |
+|---|---|---|
+| 地址 | [leoli236.github.io/mcd-midnight-snack](https://leoli236.github.io/mcd-midnight-snack/) | `game/midnight-snack.html`（96 KB） |
+| 怎么开始 | 点击 / 扫码 | 下载后**双击** |
+| 手机 | ✅ 浏览器直接开 | 需先把文件发到手机 |
+| Windows / macOS | ✅ | ✅ |
+| 联网 | 首次打开需要 | **不需要**，断网可玩 |
+
+<details>
+<summary><b>Windows 上能不能打开？</b>（能，坑已经替你排掉了）</summary>
+
+<br>
+
+双击 `midnight-snack.html` 就能玩，默认走 Edge。三个 Windows 上的经典坑都已处理：
+
+| 坑 | 处理方式 |
+|---|---|
+| 中文乱码 | `<meta charset="UTF-8">` 落在文件第 **43 字节**（必须在前 1024 字节内浏览器才认），文件本身是 UTF-8 无 BOM |
+| 中文字体缺失 | 字体栈里带了 `Consolas`（Windows 等宽）+ `Microsoft YaHei`，不需要额外装字体 |
+| 解压 zip 后文件名乱码 | 仓库内所有文件名均为 ASCII，Windows 资源管理器用 GBK 解压也不会炸 |
+
+另外「下载后 Edge 会拦截吗」——不会。`.html` 不触发 SmartScreen 的安装拦截，最多角落提示一次来源，点继续即可。
+
+还有两处针对 `file://` 协议做过的降级：门店商品图加载失败会回退到像素图；分享结局时用不来异步剪贴板会自动降级到手动复制。
+</details>
+
+### 方式 A：下载后双击（最便携，可离线）
 
 ```bash
-open game/midnight-snack.html      # macOS
-# 或者：双击 game/midnight-snack.html
+# macOS
+open game/midnight-snack.html
+# Windows：直接在资源管理器里双击 game/midnight-snack.html
 ```
 
 内置了一份 2026-10-22 从**深圳松坪山餐厅**（24h 营业，含「宵夜 00:00–04:45」时段）拉取的真实菜单，
-所以不配 MCP 也能玩。
+所以不配 MCP、甚至断网也能玩。单个 HTML 文件拷到 U 盘、发给同事都不丢东西。
 
 ### 方式 B：用你自己门店的数据玩
 
@@ -313,8 +352,11 @@ mcd-midnight-snack/
 │   └── menu.js               # MCP 生成的门店实时菜单（可选，缺失则回退内置）
 ├── scripts/
 │   └── fetch-menu.mjs        # MCP Streamable HTTP 客户端，生成菜单数据
+├── .github/workflows/
+│   └── pages.yml             # 自动部署到 GitHub Pages（从 game/ 现场生成，不留副本）
 ├── docs/
-│   └── pixel-banner.svg
+│   ├── pixel-banner.svg
+│   └── qrcode.svg            # 扫码直达在线版
 ├── data/
 │   ├── menu.json             # 同一份数据的 JSON 版，可在游戏里手动载入
 │   ├── menu-raw.json         # MCP 原始响应留档（可核 Trace ID）
@@ -335,13 +377,30 @@ mcd-midnight-snack/
 - 音效是 Web Audio API 现场合成的 8-bit 波形 —— 振荡器 + 增益包络（attack 8 ms + 指数释放），
   经总线压缩、复音上限、按名节流三重保护，右上角可静音 / 调音量
 - 全流程由 12 状态 22 转移的显式状态机驱动，带 undo 栈与数值快照回滚
-- 结局卡可一键复制到剪贴板，方便分享
+- 结局卡可一键复制到剪贴板（`navigator.clipboard` → `execCommand` → 手动选中，三级降级）
 - 支持移动端，响应式布局
+
+### 在线版是怎么部署的
+
+GitHub Actions + Pages，**仓库里刻意不放第二份 `index.html`**：每次 push 到 main 时，
+`.github/workflows/pages.yml` 从 `game/` 现场生成发布目录：
+
+```
+game/midnight-snack.html → _site/index.html
+game/menu.js             → _site/menu.js
+data/menu.json           → _site/data/menu.json
+```
+
+这样「仓库里的源文件」和「线上跑的那份」永远一致，不会出现改了 `game/` 忘了同步 `index.html` 的漂移。
+发布前还有一道自检：**产物非空 + charset 声明必须落在前 1024 字节内** —— 这条直接决定 Windows 双击会不会乱码。
 
 ### 已验证
 
 | 项 | 结果 |
 |---|---|
+| **在线版（真实 URL，桌面 1280×1000）** | 完整通关到 RESULT · 0 JS 错误 |
+| **在线版（真实 URL，iPhone 13 视口 + 载入真实菜单）** | 完整通关到 RESULT · 0 JS 错误 |
+| **单文件 `file://` 无 `menu.js`** | 20 项走内置快照 · localStorage/clipboard/AudioContext 全可用 · 0 JS 错误 |
 | 完整流程 TITLE → RESULT | 0 状态机拒绝 · 0 JS 错误 |
 | 11 条不同玩法路径 | 全部到达 RESULT，6 个结局全部可达（01–06） |
 | 连点 100 次音效 | 并发发声体 3 个（上限 10），被节流，无爆音 |
