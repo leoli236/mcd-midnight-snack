@@ -1,0 +1,63 @@
+name: Deploy to GitHub Pages
+
+# 单文件游戏 → GitHub Pages。
+# 这里刻意不在仓库里放第二份 index.html：每次 push 从 game/ 现场生成，
+# 保证「仓库里的源文件」和「线上跑的那份」永远一致，不会版本漂移。
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'game/**'
+      - 'data/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:     # 允许在 Actions 页面手动点一次
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同时只有一次部署：进行中的排队，不会因为连续 push 互相覆盖。
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 组装发布目录
+        run: |
+          mkdir -p _site/data
+          cp game/midnight-snack.html _site/index.html
+          cp game/menu.js           _site/menu.js
+          cp data/menu.json         _site/data/menu.json
+          touch _site/.nojekyll
+          echo "--- _site ---"
+          ls -la _site
+
+      # 发布前自检：产物不能是空的，且必须带 UTF-8 声明（否则 Windows 上会乱码）
+      - name: 产物自检
+        run: |
+          test -s _site/index.html || { echo "index.html 为空"; exit 1; }
+          head -c 1024 _site/index.html | grep -q 'charset="UTF-8"' \
+            || { echo "前 1024 字节内找不到 charset 声明"; exit 1; }
+          echo "自检通过：非空 + UTF-8 声明在前 1024 字节内"
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
