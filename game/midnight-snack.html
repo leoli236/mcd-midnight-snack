@@ -143,6 +143,65 @@ button:disabled{opacity:.45; cursor:not-allowed;}
 .cart .it em{color:var(--green); font-style:normal;}
 .flash{color:var(--pink); animation:blink .5s steps(1) 3;}
 
+/* ---------- 悬浮购物车 ----------
+   菜单有 20 张卡片，原来的购物车条沉在页面底部，往下滚就看不见了。
+   这里单独挂一个 fixed 悬浮栏到 body 上（不放在 .panel 里，
+   避免任何祖先的 transform / overflow 把 fixed 变成相对定位）。 */
+#fcart{
+  position:fixed; left:0; right:0; bottom:0; z-index:60;
+  display:flex; justify-content:center; padding:0 8px 8px;
+  pointer-events:none;                    /* 只有栏本身接收点击，两侧可穿透 */
+  animation:fcIn .24s cubic-bezier(.2,.9,.3,1);
+}
+@keyframes fcIn{from{transform:translateY(40px); opacity:0} to{transform:translateY(0); opacity:1}}
+#fcart .fc{
+  pointer-events:auto; width:100%; max-width:742px;
+  background:rgba(26,23,50,.975); border:3px solid var(--warm);
+  box-shadow:0 -4px 0 rgba(0,0,0,.5), 0 0 26px rgba(0,0,0,.5);
+}
+#fcart .fc-top{display:flex; align-items:center; gap:9px; padding:8px 11px;}
+#fcart .fc-empty{padding:10px 12px; font-size:12px; color:var(--dim);}
+#fcart .fc-n{
+  background:var(--warm); color:#1c1936; font-weight:bold; font-size:12px;
+  padding:1px 8px; min-width:44px; text-align:center; box-shadow:2px 2px 0 rgba(0,0,0,.4);
+  flex:none;
+}
+#fcart .fc-n.zero{background:#3a3560; color:var(--dim);}
+#fcart .fc-list{
+  flex:1; min-width:0; font-size:12px; overflow:hidden;
+  text-overflow:ellipsis; white-space:nowrap; color:var(--dim);
+}
+#fcart .fc-list b{color:var(--green); font-weight:normal;}
+#fcart .fc-sum{font-size:12px; white-space:nowrap; flex:none;}
+#fcart .fc-sum b{color:var(--warm);}
+#fcart .fc-tog{
+  flex:none; width:auto; padding:0 3px; margin:0; border:none; background:none;
+  box-shadow:none; color:var(--dim); font-size:12px; text-align:center;
+}
+#fcart .fc-tog:hover{color:var(--warm); background:none; border:none;}
+#fcart .fc-tog:active{transform:none; box-shadow:none;}
+#fcart .fc-body{
+  border-top:2px dashed #3a3560; padding:8px 11px;
+  display:flex; flex-direction:column; gap:5px;
+  max-height:38vh; overflow-y:auto;
+}
+#fcart .fc-row{display:flex; align-items:center; gap:9px; font-size:12.5px;}
+#fcart .fc-row .nm{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+#fcart .fc-row .x{
+  flex:none; width:auto; padding:0 5px; margin:0; border:none; background:none;
+  box-shadow:none; color:var(--dim); font-size:14px; text-align:center; line-height:1;
+}
+#fcart .fc-row .x:hover{color:var(--red); background:none; border:none;}
+#fcart .fc-row .x:active{transform:none; box-shadow:none;}
+#fcart .fc-act{gap:8px; margin-top:3px;}
+#fcart .fc-act button{padding:7px 10px; text-align:center; font-size:12.5px;}
+/* 悬浮栏会盖住最后一张卡片，给它让出高度 */
+body.has-fcart{padding-bottom:104px;}
+@media (max-width:560px){
+  #fcart .fc-sum{display:none;}          /* 窄屏优先保住品名，价格热量收起 */
+  body.has-fcart{padding-bottom:118px;}
+}
+
 /* ---------- 后厨 / 出餐 ---------- */
 .kitchen{margin-top:10px;}
 .krow{
@@ -210,6 +269,35 @@ button:disabled{opacity:.45; cursor:not-allowed;}
 .warn{margin-top:12px; font-size:11.5px; color:var(--dim); text-align:center;}
 .center{text-align:center;}
 .row{display:flex; gap:10px; margin-top:16px; flex-wrap:wrap;}
+.row > button{flex:1 1 auto;}
+
+/* ---------- 分享卡片弹层 ---------- */
+#sharemodal{
+  position:fixed; inset:0; z-index:90;
+  display:flex; align-items:center; justify-content:center; padding:16px;
+  animation:smIn .18s ease;
+}
+@keyframes smIn{from{opacity:0} to{opacity:1}}
+#sharemodal .sm-bg{position:absolute; inset:0; background:rgba(10,8,20,.85);}
+#sharemodal .sm-box{
+  position:relative; width:100%; max-width:470px; max-height:92vh; overflow-y:auto;
+  background:var(--panel); border:3px solid var(--warm);
+  box-shadow:6px 6px 0 rgba(0,0,0,.5); padding:14px;
+}
+#sharemodal .sm-hd{
+  display:flex; align-items:center; justify-content:space-between;
+  font-size:13.5px; color:var(--warm); letter-spacing:1px;
+}
+#sharemodal .sm-hd button{
+  width:auto; padding:0 5px; border:none; background:none;
+  box-shadow:none; color:var(--dim); font-size:15px; line-height:1;
+}
+#sharemodal .sm-hd button:hover{color:var(--red); background:none; border:none;}
+#sharemodal .sm-hd button:active{transform:none; box-shadow:none;}
+#sharemodal .sm-img{margin:11px 0; border:2px solid var(--line); background:#000; line-height:0;}
+#sharemodal .sm-img img{display:block; width:100%; height:auto;}
+#sharemodal .sm-tip{font-size:12px; color:var(--dim); line-height:1.7;}
+#sharemodal .sm-tip b{color:var(--warm);}
 .row button{flex:1 1 140px;}
 .row button.ghost{flex:0 1 auto; padding:11px 14px;}
 .hidden{display:none !important;}
@@ -989,11 +1077,73 @@ function scene(o){
 }
 
 /* ═══════════════════════════════════════════════════════
+   6.5 悬浮购物车 FloatCart
+   菜单有 20 张卡片，页面底部的购物车条会被一路滚下去。这里挂一个
+   body 级的 fixed 悬浮栏，任何时候都能一眼看见「我到底选了什么」。
+   挂在 body 而非 .panel 里是有意的：任何祖先的 transform / overflow
+   都会让 fixed 退化成相对定位，那样就白扎腾了。
+   ═══════════════════════════════════════════════════════ */
+function mountFloatCart(){
+  document.getElementById('fcart')?.remove();     // 缺料回退会重入，先去重
+  const wrap=document.createElement('div');
+  wrap.id='fcart';
+  wrap.innerHTML='<div class="fc"></div>';
+  document.body.appendChild(wrap);
+  document.body.classList.add('has-fcart');       // 给 body 让出底部空间
+  return wrap.querySelector('.fc');
+}
+function unmountFloatCart(){
+  document.getElementById('fcart')?.remove();
+  document.body.classList.remove('has-fcart');
+}
+function renderFloatCart(fc, items, qty, cb){
+  if(!fc) return;              // 悬浮栏没挂上就静默降级：面板里那条购物车还在
+  const sum = (f)=> items.reduce((a,m)=>a+f(m, qty.get(m.id)), 0);
+  if(!items.length){
+    fc.innerHTML='<div class="fc-empty">购物车是空的 · 点上面的卡片加餐，什么都不点也可以直接走</div>';
+    return;
+  }
+  const names = items.map(m=>'<b>'+m.name+'</b>'+(qty.get(m.id)>1?'×'+qty.get(m.id):'')).join(' · ');
+  fc.innerHTML =
+    '<div class="fc-top">'+
+      '<span class="fc-n">'+sum((m,n)=>n)+' 份</span>'+
+      '<span class="fc-list">'+names+'</span>'+
+      '<span class="fc-sum">¥<b>'+sum((m,n)=>m.price*n).toFixed(1)+'</b> · <b>'+sum((m,n)=>m.kcal*n)+'</b> kcal</span>'+
+      '<button class="fc-tog" id="fctog" aria-label="展开或收起明细">'+(cb.open?'▾':'▸')+'</button>'+
+    '</div>'+
+    /* 明细默认展开 —— 用户要的就是不用滚动也能看全，收起只是给小屏留退路 */
+    (cb.open
+      ? '<div class="fc-body">'+
+          items.map(m=>
+            '<div class="fc-row">'+
+              '<span class="nm">'+m.name+'</span>'+
+              '<span style="color:var(--dim)">×'+qty.get(m.id)+'</span>'+
+              '<span style="color:var(--warm);min-width:54px;text-align:right">¥'+(m.price*qty.get(m.id)).toFixed(1)+'</span>'+
+              '<button class="x" data-id="'+m.id+'" aria-label="去掉一份'+m.name+'">−</button>'+
+            '</div>').join('')+
+          '<div class="fc-row fc-act">'+
+            '<button class="primary" id="fok" style="flex:1">就这些 →</button>'+
+            '<button class="ghost" id="fclear" style="width:auto">清空</button>'+
+          '</div>'+
+        '</div>'
+      : '');
+  document.getElementById('fctog')?.addEventListener('click', cb.onToggle);
+  document.getElementById('fok')?.addEventListener('click', cb.onSubmit);
+  document.getElementById('fclear')?.addEventListener('click', cb.onClear);
+  fc.querySelectorAll('.fc-row .x').forEach(b=>{
+    b.addEventListener('click', ()=>cb.onRemove(b.dataset.id));
+  });
+}
+
+/* ═══════════════════════════════════════════════════════
    7. 点单 PICK：分类 + 官方图片 + 食材 + 多份
    ═══════════════════════════════════════════════════════ */
 function pickMenu(){
   return new Promise(res=>{
     showTop();
+    /* 离开点单界面的唯一出口。悬浮栏是挂在 body 上的独立节点，
+       必须在这里卸载，否则会泄漏到下一个场景（而且底部留白也不撤掉）。 */
+    const finish = (v)=>{ unmountFloatCart(); res(v); };
     /* 缺料回退会重新进入本函数。此时 S.cart 里还留着没被划掉的份数，
        必须先把它们灌回 qty，否则玩家剩下的订单会被静默清空。 */
     const qty = new Map();
@@ -1001,6 +1151,8 @@ function pickMenu(){
     const carried = qty.size > 0;
     let cat = '全部';
     const cats = ['全部', ...new Set(MENU.map(m=>m.category))];
+    const fc = mountFloatCart();          // 悬浮购物车，见文件末尾的 FloatCart 模块
+    let fcOpen = true;
 
     stage.innerHTML =
       '<div class="panel">'+artHTML('door',7)+
@@ -1093,15 +1245,7 @@ function pickMenu(){
           renderCards(); renderCart();
         };
         const mn=c.querySelector('.minus');
-        if(mn) mn.onclick=(ev)=>{
-          ev.stopPropagation();
-          const r = FSM.dispatch('REMOVE_ITEM', {id:m.id, qty:qty.get(m.id)||0});
-          if(!r.ok){ Audio.play('error'); flash(r.reason); return; }
-          const cur=(qty.get(m.id)||0);
-          if(cur>1) qty.set(m.id,cur-1); else qty.delete(m.id);
-          Audio.play('remove');
-          renderCards(); renderCart();
-        };
+        if(mn) mn.onclick=(ev)=>{ ev.stopPropagation(); removeOne(m.id); };
         box.appendChild(c);
       });
     }
@@ -1113,30 +1257,51 @@ function pickMenu(){
               '第 '+n+' 份。你在用点击填补某种东西，这没什么好羞耻的。'][Math.min(n-1,3)];
     }
     function flash(t){ mdesc.innerHTML='<span class="flash">'+t+'</span>'; }
-    function renderCart(){
-      const items = MENU.filter(m=>qty.get(m.id));
-      if(!items.length){ cartEl.innerHTML='<span style="color:var(--dim)">购物车是空的。点上面的卡片，或者什么都不点直接走。</span>'; return; }
-      cartEl.innerHTML =
-        '<span class="it"><em>'+items.map(m=>m.name+(qty.get(m.id)>1?'×'+qty.get(m.id):'')).join(' · ')+'</em></span>'+
-        '<span>份数 <b>'+items.reduce((a,m)=>a+qty.get(m.id),0)+'</b></span>'+
-        '<span>合计 <b>¥'+items.reduce((a,m)=>a+m.price*qty.get(m.id),0).toFixed(1)+'</b></span>'+
-        '<span>热量 <b>'+items.reduce((a,m)=>a+m.kcal*qty.get(m.id),0)+' kcal</b></span>';
-    }
 
-    document.getElementById('clear').onclick=()=>{
+    /* 一组共用的动作入口。面板里的按钮和悬浮栏里的按钮走同一条路径，
+       避免两处逻辑各自演化后行为不一致。 */
+    function removeOne(id){
+      const r = FSM.dispatch('REMOVE_ITEM', {id, qty:qty.get(id)||0});
+      if(!r.ok){ Audio.play('error'); flash(r.reason); return false; }
+      const cur = qty.get(id)||0;
+      if(cur>1) qty.set(id, cur-1); else qty.delete(id);
+      Audio.play('remove');
+      renderCards(); renderCart();
+      return true;
+    }
+    function submit(){
+      const r = FSM.dispatch('SUBMIT_ORDER');
+      if(!r.ok){ Audio.play('error'); flash(r.reason); return; }
+      S.cart = MENU.filter(m=>qty.get(m.id)).map(m=>({item:m, qty:qty.get(m.id)}));
+      Audio.play('order');
+      finish();
+    }
+    function clearAll(){
       const r = FSM.dispatch('CLEAR_CART', {count: qty.size});
       if(!r.ok){ Audio.play('error'); flash(r.reason); return; }
       qty.clear(); Audio.play('remove'); renderCards(); renderCart();
       [...moodBox.children].forEach(x=>x.classList.remove('on'));
       mdesc.textContent='清空了。可以重新来一次。';
-    };
-    document.getElementById('ok').onclick=()=>{
-      const r = FSM.dispatch('SUBMIT_ORDER');
-      if(!r.ok){ Audio.play('error'); flash(r.reason); return; }
-      S.cart = MENU.filter(m=>qty.get(m.id)).map(m=>({item:m, qty:qty.get(m.id)}));
-      Audio.play('order');
-      res();
-    };
+    }
+
+    function renderCart(){
+      const items = MENU.filter(m=>qty.get(m.id));
+      const sum = (f)=> items.reduce((a,m)=>a+f(m, qty.get(m.id)), 0);
+      // 面板里那条购物车保留：悬浮栏万一没挂上（极端情况），数据仍有地方显示
+      if(!items.length){ cartEl.innerHTML='<span style="color:var(--dim)">购物车是空的。点上面的卡片，或者什么都不点直接走。</span>'; }
+      else cartEl.innerHTML =
+        '<span class="it"><em>'+items.map(m=>m.name+(qty.get(m.id)>1?'×'+qty.get(m.id):'')).join(' · ')+'</em></span>'+
+        '<span>份数 <b>'+sum((m,n)=>n)+'</b></span>'+
+        '<span>合计 <b>¥'+sum((m,n)=>m.price*n).toFixed(1)+'</b></span>'+
+        '<span>热量 <b>'+sum((m,n)=>m.kcal*n)+' kcal</b></span>';
+      renderFloatCart(fc, items, qty, {
+        open: fcOpen, onToggle:()=>{ fcOpen=!fcOpen; Audio.play('click'); renderCart(); },
+        onRemove: removeOne, onSubmit: submit, onClear: clearAll
+      });
+    }
+
+    document.getElementById('clear').onclick=clearAll;
+    document.getElementById('ok').onclick=submit;
 
     renderTabs(); renderCards(); renderCart();
     if(carried){
@@ -1419,6 +1584,248 @@ function eatStage(){
 }
 
 /* ═══════════════════════════════════════════════════════
+   9.5 分享卡片 ShareCard：Canvas 手绘 → 可存图转发的结局卡
+
+   三个实现决策，都是为了「生成得出来」而不是「看着好看」：
+
+   ① 用 Canvas 2D 手绘，不引 html2canvas —— 本项目坚持零依赖；
+      SVG foreignObject 转图在 Safari 上会丢排版，同样不可靠。
+
+   ② **绝不把麦当劳 CDN 的跨域商品图画进画布**。这是最关键的一条：
+      一旦画进去，canvas 立即被标记为 tainted，toDataURL / toBlob
+      会直接抛 SecurityError —— 卡片根本生成不出来，而且是静默失败。
+      所以这里只用自绘像素图：既安全，画风也和游戏本体一致。
+
+   ③ 卡片高度固定 1320，中间各块流式排布，note 与页脚永远钉在底部 ——
+      内容多寡不同也不会头重脚轻；万一内容真的排不下，
+      超出部分按 safe() 逐级跳过（宁缺勿乱画）。
+   ═══════════════════════════════════════════════════════ */
+function wrapText(g, text, maxW){
+  const out=[];
+  String(text==null?'':text).split('\n').forEach(seg=>{
+    let line='';
+    for(const ch of seg){
+      if(line && g.measureText(line+ch).width > maxW){ out.push(line); line=ch; }
+      else line+=ch;
+    }
+    out.push(line);
+  });
+  return out;
+}
+function roundRectPath(g,x,y,w,h,r){
+  g.beginPath();
+  g.moveTo(x+r,y); g.lineTo(x+w-r,y); g.quadraticCurveTo(x+w,y,x+w,y+r);
+  g.lineTo(x+w,y+h-r); g.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  g.lineTo(x+r,y+h); g.quadraticCurveTo(x,y+h,x,y+h-r);
+  g.lineTo(x,y+r); g.quadraticCurveTo(x,y,x+r,y);
+  g.closePath();
+}
+/* 把 ART 点阵直接画到画布 —— 和网页里 CSS Grid 的像素图是同一份数据 */
+function drawArtOn(g, name, x, y, px){
+  const rows = ART[name]; if(!rows) return;
+  rows.forEach((row,ry)=>{
+    for(let cx=0;cx<row.length;cx++){
+      const c = PAL[row[cx]];
+      if(!c || c==='transparent') continue;
+      g.fillStyle=c; g.fillRect(x+cx*px, y+ry*px, px, px);
+    }
+  });
+}
+
+const ShareCard = {
+  W:750, H:1320, DPR:2,
+  FONT:'ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, "PingFang SC", "Microsoft YaHei", monospace',
+
+  draw(o){
+    const W=this.W, H=this.H;
+    const F=(s,w)=> (w?w+' ':'')+s+'px '+this.FONT;
+    const cv=document.createElement('canvas');
+    cv.width=W*this.DPR; cv.height=H*this.DPR;
+    const g=cv.getContext('2d');
+    g.scale(this.DPR,this.DPR);
+    g.textBaseline='alphabetic';
+    const M=52;                                  // 左右页边距
+    /* 底部 note 与页脚占用的高度，任何内容都不能挤进这块区域 */
+    const safe=(y2,need)=> y2+need < H-196;
+
+    /* ---- 背景 ---- */
+    const bg=g.createLinearGradient(0,0,0,H);
+    bg.addColorStop(0,'#2a2450'); bg.addColorStop(.55,'#1c1936'); bg.addColorStop(1,'#141228');
+    g.fillStyle=bg; g.fillRect(0,0,W,H);
+    const glow=g.createRadialGradient(W/2,150,10,W/2,150,460);
+    glow.addColorStop(0,'rgba(246,211,101,.20)'); glow.addColorStop(1,'rgba(246,211,101,0)');
+    g.fillStyle=glow; g.fillRect(0,0,W,700);
+    g.strokeStyle='#f6d365'; g.lineWidth=6; g.strokeRect(3,3,W-6,H-6);
+    g.strokeStyle='rgba(246,211,101,.16)'; g.lineWidth=2; g.strokeRect(17,17,W-34,H-34);
+
+    /* ---- 顶部：标题 + 日期 ---- */
+    g.fillStyle='#f6d365'; g.font=F(15,'bold'); g.textAlign='left';
+    g.fillText('深夜进食 · MIDNIGHT SNACK', M, 54);
+    g.fillStyle='#7a73ad'; g.font=F(13); g.textAlign='right';
+    g.fillText(o.date||'', W-M, 54);
+    g.strokeStyle='rgba(246,211,101,.30)'; g.lineWidth=2;
+    g.beginPath(); g.moveTo(M,68); g.lineTo(W-M,68); g.stroke();
+
+    /* ---- 像素主角 ---- */
+    const px=19;
+    drawArtOn(g, o.art, (W-12*px)/2, 92, px);
+
+    /* ---- ENDING badge ---- */
+    let y = 92+10*px+34;
+    g.textAlign='center'; g.font=F(14,'bold');
+    const bw = g.measureText(o.badge).width+34;
+    roundRectPath(g,(W-bw)/2,y,bw,34,4);
+    g.fillStyle='rgba(123,216,143,.10)'; g.fill();
+    g.strokeStyle='#7bd88f'; g.lineWidth=2; g.stroke();
+    g.fillStyle='#7bd88f'; g.fillText(o.badge, W/2, y+23);
+
+    /* ---- 大标题 ---- */
+    y+=78;
+    g.fillStyle='#f6d365'; g.font=F(52,'bold');
+    g.fillText(o.title||'', W/2, y);
+
+    /* ---- 正文 ---- */
+    y+=40;
+    g.fillStyle='#c6c1e8'; g.font=F(17);
+    wrapText(g,o.body,W-M*2-20).slice(0,7).forEach(ln=>{ g.fillText(ln, W/2, y); y+=29; });
+
+    /* ---- 四宫格：精力 / 心情 / 焦虑 / 满足感 ---- */
+    y+=26;
+    const bwd=(W-M*2-12)/2, bht=86;
+    [[ '精力',o.delta.energy],['心情',o.delta.mood],
+     ['焦虑',o.delta.anxiety],['满足感',o.delta.satisfaction]
+    ].forEach((c,i)=>{
+      const cx=M+(i%2)*(bwd+12), cy=y+Math.floor(i/2)*(bht+12);
+      roundRectPath(g,cx,cy,bwd,bht,6);
+      g.fillStyle='rgba(255,255,255,.045)'; g.fill();
+      g.strokeStyle='#3a3560'; g.lineWidth=2; g.stroke();
+      g.textAlign='center';
+      g.fillStyle='#8a83c4'; g.font=F(15);
+      g.fillText(c[0], cx+bwd/2, cy+31);
+      g.fillStyle = c[1]>0?'#7bd88f':(c[1]<0?'#e8452c':'#8a83c4');
+      g.font=F(34,'bold');
+      g.fillText((c[1]>0?'+':'')+Math.round(c[1]), cx+bwd/2, cy+70);
+    });
+    y += bht*2+12+34;
+
+    /* ---- 体重 / 摄入 / 花费 ---- */
+    if(safe(y,52)){
+      roundRectPath(g,M,y,W-M*2,52,6);
+      g.fillStyle='rgba(246,211,101,.07)'; g.fill();
+      g.strokeStyle='rgba(246,211,101,.35)'; g.lineWidth=2; g.stroke();
+      const seg=(W-M*2)/3;
+      [[ '体重', (o.delta.weight>=0?'+':'')+o.delta.weight.toFixed(3)+' kg', '#e8e4ff'],
+       ['今晚摄入', Math.round(o.delta.kcal)+' kcal', '#e8e4ff'],
+       ['在这家店花了', '¥'+o.price.toFixed(1), '#f6d365']
+      ].forEach((t,i)=>{
+        const cx=M+seg*i+seg/2;
+        g.textAlign='center';
+        g.fillStyle='#8a83c4'; g.font=F(13.5); g.fillText(t[0], cx, y+22);
+        g.fillStyle=t[2]; g.font=F(19,'bold'); g.fillText(t[1], cx, y+43);
+      });
+      y+=52;
+    }
+    y+=24;
+
+    /* ---- 订单清单（最多 4 样，超出折叠成一行）---- */
+    if(o.cart.length && safe(y,70)){
+      g.textAlign='left'; g.font=F(14,'bold'); g.fillStyle='#f6d365';
+      g.fillText('今晚的订单', M, y); y+=26;
+      const shown=o.cart.slice(0,4);
+      for(const c of shown){
+        if(!safe(y,20)) break;
+        g.font=F(15);
+        g.fillStyle='#c6c1e8'; g.textAlign='left';
+        g.fillText(c.item.name, M, y);
+        g.fillStyle='#f6d365'; g.textAlign='right';
+        g.fillText('×'+c.qty+'   ¥'+(c.item.price*c.qty).toFixed(1), W-M, y);
+        y+=28;
+      }
+      if(o.cart.length>shown.length && safe(y,20)){
+        g.fillStyle='#7a73ad'; g.font=F(14); g.textAlign='left';
+        g.fillText('…还有 '+(o.cart.length-shown.length)+' 样', M, y); y+=28;
+      }
+    }
+
+    /* ---- 隐藏成就 ---- */
+    if(o.achv.length && safe(y,44)){
+      y+=14;
+      g.font=F(15,'bold'); g.textAlign='left';
+      o.achv.slice(0,2).forEach(a=>{
+        if(!safe(y,20)) return;
+        g.fillStyle=a.color||'#f6d365';
+        g.fillText('◆ '+a.text, M, y); y+=30;
+      });
+    }
+
+    /* ---- note：钉在底部，与上方内容留出呼吸 ---- */
+    const ny = H-186;
+    g.strokeStyle='rgba(246,211,101,.22)'; g.lineWidth=2;
+    g.beginPath(); g.moveTo(M,ny-36); g.lineTo(W-M,ny-36); g.stroke();
+    g.textAlign='center'; g.font=F(18); g.fillStyle='#f6d365';
+    wrapText(g,o.note,W-M*2).slice(0,3).forEach((ln,i)=>{ g.fillText(ln, W/2, ny+i*28); });
+
+    /* ---- 页脚 ---- */
+    g.font=F(13); g.fillStyle='#7a73ad';
+    g.fillText('本局没有评分，没有最优解 · 放纵和克制都不是错误答案', W/2, H-86);
+    g.font=F(12);
+    g.fillText('麦当劳 MCP 驱动的治愈系小游戏 · github.com/leoli236/mcd-midnight-snack', W/2, H-60);
+
+    return cv;
+  }
+};
+
+/* 保存画布：优先 toBlob（内存友好），失败退回 toDataURL。
+   iOS Safari 对 <a download> 支持不稳，所以调用方还要同时展示图片让用户长按保存。 */
+function downloadCanvas(cv, name){
+  const eh=document.getElementById('smsg');
+  const say=(t)=>{ if(eh) eh.textContent=t; };
+  const fire=(href, revoke)=>{
+    const a=document.createElement('a');
+    a.href=href; a.download=name; a.style.display='none';
+    document.body.appendChild(a); a.click(); a.remove();
+    if(revoke) setTimeout(()=>URL.revokeObjectURL(href), 6000);
+    say('已保存到本地 ✓');
+  };
+  try{
+    if(cv.toBlob){
+      cv.toBlob(b=>{ if(b) fire(URL.createObjectURL(b), true); else say('生成失败，请长按图片保存'); }, 'image/png');
+    }else fire(cv.toDataURL('image/png'), false);
+  }catch(_){
+    try{ fire(cv.toDataURL('image/png'), false); }catch(__){ say('生成失败，请长按图片保存'); }
+  }
+}
+
+function showShareCard(cv, name, text, onCopied){
+  let url;
+  try{ url = cv.toDataURL('image/png'); }
+  catch(_){ alert('这个浏览器不支持生成图片，请用「复制文字」代替。'); return; }
+  document.getElementById('sharemodal')?.remove();
+  const wrap=document.createElement('div');
+  wrap.id='sharemodal';
+  wrap.innerHTML =
+    '<div class="sm-bg"></div>'+
+    '<div class="sm-box">'+
+      '<div class="sm-hd"><span>今晚的结局卡</span><button id="smx" aria-label="关闭">✕</button></div>'+
+      '<div class="sm-img"><img src="'+url+'" alt="结局卡片"></div>'+
+      '<div class="sm-tip" id="smsg">手机上<b>长按图片</b>即可保存到相册，然后转发给同样晚下班的人。<br>'+
+        '电脑上点下面的按钮下载 PNG。</div>'+
+      '<div class="row">'+
+        '<button class="primary" id="smdl">下载 PNG</button>'+
+        '<button id="smcp">复制文字版</button>'+
+      '</div>'+
+    '</div>';
+  document.body.appendChild(wrap);
+  const close=()=>{ wrap.remove(); document.removeEventListener('keydown', onKey); };
+  const onKey=(ev)=>{ if(ev.key==='Escape') close(); };
+  document.addEventListener('keydown', onKey);
+  wrap.querySelector('.sm-bg').onclick=close;
+  document.getElementById('smx').onclick=close;
+  document.getElementById('smdl').onclick=()=>{ Audio.play('coin'); downloadCanvas(cv,name); };
+  document.getElementById('smcp').onclick=()=>{ Audio.play('click'); onCopied && onCopied(); };
+}
+
+/* ═══════════════════════════════════════════════════════
    10. 结局
    ═══════════════════════════════════════════════════════ */
 function ending(){
@@ -1441,6 +1848,12 @@ function ending(){
   const fmt=(v,u)=>'<div>'+u+' <b style="color:'+(v>0?'var(--green)':(v<0?'var(--red)':'var(--dim)'))+'">'+
     (v>0?'+':'')+(u==='kg'?v.toFixed(3):Math.round(v))+'</b></div>';
 
+  /* 成就同时给网页版和分享卡片用：一份数据，两种呈现，不会互相漂移 */
+  const achv=[];
+  if(kinds>=4)    achv.push({text:'全家桶工程师 · 你把菜单点成了全量覆盖测试', color:'#7bd88f'});
+  if(S.halfStop)  achv.push({text:'未完成的 commit · 你留了半盒在桌上。这不是 bug，是 feature', color:'#7aa7ff'});
+  if(S.shortage)  achv.push({text:'404 Not Found · '+S.shortage+' 份餐品在厨房里消失了，你接受了这件事', color:'#f6d365'});
+
   document.getElementById('hud').classList.add('hidden');
   stage.innerHTML =
     '<div class="panel center">'+artHTML(e.art,8)+
@@ -1454,7 +1867,11 @@ function ending(){
     (S.halfStop?'<div class="note" style="border-color:var(--blue);color:var(--blue)">🏆 隐藏成就 · 未完成的 commit：你留了半盒在桌上。这不是 bug，是 feature。</div>':'')+
     (S.shortage?'<div class="note" style="border-color:var(--warm);color:var(--warm)">🏆 隐藏成就 · 404 Not Found：'+S.shortage+' 份餐品在厨房里消失了，你接受了这件事。</div>':'')+
     (cartPrice()>0?'<div class="warn" style="margin-top:10px">今晚在这家店花了 ¥'+cartPrice().toFixed(1)+'（门店实时售价）</div>':'')+
-    '<div class="row"><button class="primary" id="cp">复制结局卡</button><button id="again">再玩一次</button></div>'+
+    '<div class="row">'+
+      '<button class="primary" id="shot">生成分享卡片</button>'+
+      '<button id="cp">复制文字</button>'+
+      '<button id="again">再玩一次</button>'+
+    '</div>'+
     '<div class="warn">本局没有评分，没有最优解。放纵和克制都不是错误答案。</div>'+
     '</div>';
   Audio.play('ending');
@@ -1462,16 +1879,36 @@ function ending(){
   const text = '【深夜进食 · '+e.title+'】\n'+e.body+'\n—— '+e.note+'\n今晚：精力 '+fmtNum(d.energy)+
     ' 心情 '+fmtNum(d.mood)+' 焦虑 '+fmtNum(d.anxiety)+' 满足感 '+fmtNum(d.satisfaction)+
     ' 体重 '+(d.weight>=0?'+':'')+d.weight.toFixed(3)+'kg';
-  document.getElementById('cp').onclick=()=>{
-    const btn=document.getElementById('cp');
-    const done=()=>{ btn.textContent='已复制到剪贴板 ✓'; Audio.play('coin'); };
-    const fail=()=>{ btn.textContent='复制失败，手动选吧'; Audio.play('error'); };
+  /* 网页上的「复制文字」按钮和分享卡片弹层里的「复制文字版」共用这一条路径 */
+  function copyText(onResult){
     // 三级降级：navigator.clipboard → execCommand('copy') → 提示手选。
     // file:// 协议或部分浏览器（含 Windows 上的 Edge 早期版本）不给异步剪贴板权限，
     // 这里的兜底保证「分享结局」在任何环境下都不会静默失败。
+    const ok=()=>{ onResult && onResult(true);  Audio.play('coin');  };
+    const no=()=>{ onResult && onResult(false); Audio.play('error'); };
     if(navigator.clipboard?.writeText){
-      navigator.clipboard.writeText(text).then(done).catch(()=>{ legacyCopy(text)?done():fail(); });
-    }else{ legacyCopy(text)?done():fail(); }
+      navigator.clipboard.writeText(text).then(ok).catch(()=>{ legacyCopy(text)?ok():no(); });
+    }else{ legacyCopy(text)?ok():no(); }
+  }
+  const cpBtn=document.getElementById('cp');
+  cpBtn.onclick=()=>copyText(s=>{ cpBtn.textContent = s?'已复制到剪贴板 ✓':'复制失败，手动选吧'; });
+
+  document.getElementById('shot').onclick=()=>{
+    Audio.play('coin');
+    let cv;
+    try{
+      cv = ShareCard.draw({
+        art:e.art, badge:e.badge, title:e.title, body:e.body, note:e.note,
+        delta:d, cart:S.cart, price:cartPrice(), achv,
+        date:new Date().toLocaleDateString('zh-CN')   // 卡片右下角的日期
+      });
+    }catch(err){
+      // 画布不可用时不要卡住玩家：直接退回复制文字版
+      console.warn('分享卡片生成失败，已退回文字版：', err);
+      copyText(s=>{ cpBtn.textContent = s?'已复制文字版 ✓':'复制失败，手动选吧'; });
+      return;
+    }
+    showShareCard(cv, '深夜进食-'+e.title+'.png', text, ()=>copyText());
   };
   document.getElementById('again').onclick=()=>location.reload();
 }
