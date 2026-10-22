@@ -197,9 +197,14 @@ button:disabled{opacity:.45; cursor:not-allowed;}
 #fcart .fc-act button{padding:7px 10px; text-align:center; font-size:12.5px;}
 /* 悬浮栏会盖住最后一张卡片，给它让出高度 */
 body.has-fcart{padding-bottom:104px;}
+/* 只有 padding-bottom 还不够：浏览器/自动化把按钮 scrollIntoView 时默认
+   贴到视口底边 —— 正好压进悬浮栏底下，点击会被 .fc 拦截。
+   scroll-margin 让「滚到这个元素」时自动留出悬浮栏的高度，一行修所有按钮。 */
+body.has-fcart button, body.has-fcart .card{scroll-margin-bottom:116px;}
 @media (max-width:560px){
   #fcart .fc-sum{display:none;}          /* 窄屏优先保住品名，价格热量收起 */
   body.has-fcart{padding-bottom:118px;}
+  body.has-fcart button, body.has-fcart .card{scroll-margin-bottom:130px;}
 }
 
 /* ---------- 后厨 / 出餐 ---------- */
