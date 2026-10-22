@@ -10,6 +10,7 @@ on:
     paths:
       - 'game/**'
       - 'data/**'
+      - 'docs/**'
       - '.github/workflows/pages.yml'
   workflow_dispatch:     # 允许在 Actions 页面手动点一次
 
@@ -31,10 +32,11 @@ jobs:
 
       - name: 组装发布目录
         run: |
-          mkdir -p _site/data
+          mkdir -p _site/data _site/docs
           cp game/midnight-snack.html _site/index.html
           cp game/menu.js           _site/menu.js
           cp data/menu.json         _site/data/menu.json
+          cp docs/qrcode.svg docs/qrcode.png docs/qrcode-card.png _site/docs/
           touch _site/.nojekyll
           echo "--- _site ---"
           ls -la _site
